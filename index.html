@@ -1,0 +1,599 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+:root {
+  --c1: #00c4cc;
+  --c2: #6a3be4;
+  --grad: linear-gradient(135deg, #00c4cc, #6a3be4);
+  --grad-r: linear-gradient(135deg, #6a3be4, #00c4cc);
+  --c1-dim: rgba(0,196,204,0.12);
+  --c2-dim: rgba(106,59,228,0.12);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.app {
+  font-family: 'Outfit', sans-serif;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  min-height: 480px;
+}
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* --- INTRO --- */
+.logo-mark {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-bottom: 2.5rem;
+}
+.logo-pill {
+  background: var(--grad);
+  border-radius: 40px;
+  padding: 5px 16px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #fff;
+}
+.intro-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.intro-title {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 10px;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.intro-sub {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+.swatch-stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+  height: 120px;
+  margin: 2rem 0;
+}
+.sw-bar {
+  border-radius: 40px;
+  width: 38px;
+  opacity: 0.88;
+}
+.btn-start {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  background: var(--grad);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-start:active { opacity: 0.85; transform: scale(0.98); }
+
+/* --- QUIZ --- */
+.prog-wrap {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2rem;
+}
+.pdot {
+  height: 3px;
+  flex: 1;
+  border-radius: 3px;
+  background: var(--color-border-tertiary);
+  transition: all 0.3s;
+}
+.pdot.done { background: var(--grad); }
+.pdot.active {
+  background: var(--grad);
+  box-shadow: 0 0 8px rgba(0,196,204,0.4);
+}
+
+.q-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.q-text {
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  margin-bottom: 1.6rem;
+}
+.choices { display: flex; flex-direction: column; gap: 10px; }
+.choice-btn {
+  background: var(--color-background-primary);
+  border: 1.5px solid var(--color-border-tertiary);
+  border-radius: 14px;
+  padding: 14px 16px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-family: 'Outfit', sans-serif;
+  width: 100%;
+  transition: border-color 0.18s, background 0.18s, transform 0.12s;
+  position: relative;
+  overflow: hidden;
+}
+.choice-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+.choice-btn.sel::before { opacity: 0.06; }
+.choice-btn.sel {
+  border-color: var(--c1);
+  border-image: linear-gradient(135deg, var(--c1), var(--c2)) 1;
+}
+.choice-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+.choice-txt { flex: 1; position: relative; z-index: 1; }
+.choice-main { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+.choice-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 3px; }
+.sel-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--grad);
+  display: none; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+}
+.choice-btn.sel .sel-check { display: flex; }
+
+.nav-row {
+  display: flex; gap: 10px; margin-top: 1.8rem;
+}
+.btn-back {
+  background: transparent;
+  color: var(--color-text-tertiary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 12px;
+  padding: 13px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-next {
+  flex: 1;
+  background: var(--grad);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  opacity: 0.3;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.btn-next.ready { opacity: 1; pointer-events: auto; }
+
+/* --- RESULT --- */
+.result-hero {
+  text-align: center;
+  padding: 1.2rem 0 1.6rem;
+  position: relative;
+}
+.result-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; height: 80px;
+  background: var(--grad);
+  filter: blur(50px);
+  opacity: 0.18;
+  pointer-events: none;
+  border-radius: 50%;
+}
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+  border: 1.5px solid;
+  position: relative; z-index: 1;
+}
+.result-type {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.1;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+  position: relative; z-index: 1;
+}
+.result-en {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.12em;
+  position: relative; z-index: 1;
+}
+.result-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.85;
+  margin-top: 14px;
+  position: relative; z-index: 1;
+}
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border-tertiary), transparent);
+  margin: 1.5rem 0;
+}
+.sec { margin-bottom: 1.8rem; }
+.sec-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--color-text-tertiary);
+  margin-bottom: 1rem;
+}
+.palette-row { display: flex; gap: 8px; }
+.sw-wrap { flex: 1; text-align: center; }
+.sw-circle { border-radius: 50%; margin: 0 auto 5px; }
+.sw-name { font-size: 10px; color: var(--color-text-tertiary); line-height: 1.3; }
+
+.clothes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.cloth-item { text-align: center; }
+.cloth-circle {
+  border-radius: 50%;
+  margin: 0 auto 5px;
+  width: 44px; height: 44px;
+  border: 1.5px solid rgba(0,0,0,0.07);
+}
+.cloth-name { font-size: 10px; color: var(--color-text-secondary); line-height: 1.3; }
+
+.f-item {
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 12px;
+  padding: 13px 15px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.f-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--grad);
+}
+.f-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 3px; }
+.f-desc { font-size: 12px; color: var(--color-text-secondary); }
+
+.result-actions { display: flex; gap: 10px; margin-top: 2rem; }
+.btn-share {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: var(--grad);
+  color: #fff;
+  border: none; border-radius: 12px;
+  padding: 14px 12px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+}
+.btn-retry {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: 12px; padding: 14px 12px;
+  font-size: 13px; cursor: pointer; font-family: 'Outfit', sans-serif;
+}
+.btn-retry:active { background: var(--color-background-secondary); }
+
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--grad);
+  color: #fff;
+  font-size: 13px; padding: 10px 20px;
+  border-radius: 30px; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  font-family: 'Outfit', sans-serif;
+  z-index: 100;
+  font-weight: 500;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.sheet-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none; align-items: flex-end; justify-content: center;
+  z-index: 200; min-height: 400px;
+}
+.sheet-overlay.open { display: flex; }
+.sheet {
+  background: var(--color-background-primary);
+  border-radius: 24px 24px 0 0;
+  padding: 1.5rem 1.25rem 2.5rem;
+  width: 100%; max-width: 420px;
+}
+.sheet-handle { width: 36px; height: 4px; background: var(--color-border-tertiary); border-radius: 2px; margin: 0 auto 1.4rem; }
+.sheet-title { font-size: 13px; font-weight: 600; color: var(--color-text-primary); text-align: center; margin-bottom: 1.4rem; }
+.sheet-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.2rem; }
+.sheet-opt { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; background: none; border: none; font-family: 'Outfit', sans-serif; }
+.sheet-opt-icon { width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.sheet-opt-label { font-size: 11px; color: var(--color-text-secondary); }
+.sheet-cancel { display: block; width: 100%; background: var(--color-background-secondary); border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 500; color: var(--color-text-primary); cursor: pointer; font-family: 'Outfit', sans-serif; margin-top: 0.5rem; }
+</style>
+
+<div class="app">
+  <h2 style="position:absolute;left:-9999px">퍼스널 컬러 테스트 — 3가지 질문으로 나의 컬러를 찾아보세요</h2>
+
+  <!-- INTRO -->
+  <div class="screen active" id="s-intro">
+    <div class="logo-mark">
+      <div class="logo-pill">PERSONAL COLOR TEST</div>
+    </div>
+    <div class="intro-hero">
+      <div class="intro-title">나의 퍼스널 컬러<br>알아보기</div>
+      <div class="intro-sub">3가지 질문으로 찾는 나만의 컬러</div>
+    </div>
+    <div class="swatch-stage">
+      <div class="sw-bar" style="height:95px;background:linear-gradient(180deg,#e8b86d,#c9884a);"></div>
+      <div class="sw-bar" style="height:72px;background:linear-gradient(180deg,#00c4cc,#0099a8);"></div>
+      <div class="sw-bar" style="height:110px;background:linear-gradient(180deg,#a78bfa,#6a3be4);"></div>
+      <div class="sw-bar" style="height:78px;background:linear-gradient(180deg,#f9a8d4,#e879a0);"></div>
+    </div>
+    <p class="intro-sub" style="text-align:center;margin-bottom:2rem;">피부톤에 맞는 색상을 알면<br>더 건강하고 생기있어 보여요</p>
+    <button class="btn-start" id="btn-start">테스트 시작하기 →</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="s-quiz">
+    <div class="logo-mark" style="margin-bottom:1.5rem;">
+      <div class="logo-pill">PERSONAL COLOR TEST</div>
+    </div>
+    <div class="prog-wrap" id="prog"></div>
+    <div id="qbox"></div>
+    <div class="nav-row">
+      <button class="btn-back" id="btn-back">← 이전</button>
+      <button class="btn-next" id="btn-next">다음으로</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="s-result">
+    <div id="rbox"></div>
+    <div class="result-actions">
+      <button class="btn-share" id="btn-share">
+        <svg width="14" height="14" viewBox="0 0 15 15" fill="none"><circle cx="11.5" cy="3" r="2" stroke="#fff" stroke-width="1.4"/><circle cx="11.5" cy="12" r="2" stroke="#fff" stroke-width="1.4"/><circle cx="3" cy="7.5" r="2" stroke="#fff" stroke-width="1.4"/><path d="M5 6.5L9.5 4M5 8.5L9.5 11" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+        결과 공유하기
+      </button>
+      <button class="btn-retry" id="btn-retry">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5A4.5 4.5 0 0 1 10.5 3.5L11.5 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M11 6.5A4.5 4.5 0 0 1 2.5 9.5L1.5 11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        다시 하기
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet-overlay" id="sheet-overlay">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="sheet-title">결과 공유하기</div>
+    <div class="sheet-options">
+      <button class="sheet-opt" id="sopt-kakao">
+        <div class="sheet-opt-icon" style="background:#FEE500;">
+          <svg width="24" height="22" viewBox="0 0 24 22" fill="none"><path d="M12 1C6.477 1 2 4.582 2 9c0 2.836 1.822 5.328 4.572 6.771L5.5 20l5.168-3.428A12.6 12.6 0 0 0 12 17c5.523 0 10-3.582 10-8S17.523 1 12 1z" fill="#3C1E1E"/></svg>
+        </div>
+        <span class="sheet-opt-label">카카오톡</span>
+      </button>
+      <button class="sheet-opt" id="sopt-instagram">
+        <div class="sheet-opt-icon" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="16" height="16" rx="5" stroke="white" stroke-width="1.6"/><circle cx="11" cy="11" r="4" stroke="white" stroke-width="1.6"/><circle cx="16.2" cy="5.8" r="1" fill="white"/></svg>
+        </div>
+        <span class="sheet-opt-label">인스타그램</span>
+      </button>
+      <button class="sheet-opt" id="sopt-copy">
+        <div class="sheet-opt-icon" style="background:var(--color-background-secondary);">
+          <svg width="20" height="22" viewBox="0 0 20 22" fill="none"><rect x="6" y="4" width="12" height="15" rx="3" stroke="var(--color-text-secondary)" stroke-width="1.6"/><rect x="2" y="2" width="12" height="15" rx="3" fill="var(--color-background-primary)" stroke="var(--color-text-secondary)" stroke-width="1.6"/></svg>
+        </div>
+        <span class="sheet-opt-label">링크 복사</span>
+      </button>
+      <button class="sheet-opt" id="sopt-more">
+        <div class="sheet-opt-icon" style="background:var(--color-background-secondary);">
+          <svg width="22" height="6" viewBox="0 0 22 6" fill="none"><circle cx="3" cy="3" r="2.5" fill="var(--color-text-secondary)"/><circle cx="11" cy="3" r="2.5" fill="var(--color-text-secondary)"/><circle cx="19" cy="3" r="2.5" fill="var(--color-text-secondary)"/></svg>
+        </div>
+        <span class="sheet-opt-label">더보기</span>
+      </button>
+    </div>
+    <button class="sheet-cancel" id="sheet-cancel">취소</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var Qs=[
+  {label:"QUESTION 01",text:"금색 vs 은색 액세서리,\n어느 쪽이 더 잘 어울리나요?",
+   choices:[
+    {icon:"🥇",bg:"rgba(255,200,80,0.15)",main:"금색이 훨씬 잘 어울려요",sub:"골드 액세서리를 하면 얼굴이 환해 보여요",val:"gold"},
+    {icon:"🥈",bg:"rgba(150,180,220,0.15)",main:"은색이 더 잘 맞는 것 같아요",sub:"실버 액세서리를 할 때 더 생기있어 보여요",val:"silver"},
+    {icon:"🤔",bg:"rgba(106,59,228,0.08)",main:"둘 다 비슷하게 잘 어울려요",sub:"어느 쪽이든 크게 차이를 못 느끼겠어요",val:"both"}
+  ]},
+  {label:"QUESTION 02",text:"햇볕에 오래 있으면\n피부가 어떻게 되나요?",
+   choices:[
+    {icon:"🔴",bg:"rgba(255,100,80,0.1)",main:"빨개지기만 하고 타지 않아요",sub:"잘 타지 않고 붉어졌다가 원래대로 돌아와요",val:"red"},
+    {icon:"☀️",bg:"rgba(255,180,60,0.1)",main:"빨개졌다가 나중에 구릿빛으로 타요",sub:"처음엔 붉어졌다가 시간이 지나면 자연스럽게 구릿빛이 돼요",val:"tan"},
+    {icon:"✨",bg:"rgba(0,196,204,0.08)",main:"처음부터 구릿빛으로 잘 타요",sub:"붉어지는 단계 없이 바로 자연스럽게 구릿빛이 돼요",val:"brown"}
+  ]},
+  {label:"QUESTION 03",text:"하얀 옷을 입었을 때\n얼굴이 어때 보이나요?",
+   choices:[
+    {icon:"💫",bg:"rgba(106,59,228,0.08)",main:"화사하고 밝아 보여요",sub:"얼굴이 환해지고 생기있어 보여요",val:"bright"},
+    {icon:"😶",bg:"rgba(180,160,200,0.1)",main:"얼굴이 떠 보이거나 칙칙해요",sub:"하얀 옷이 별로 안 어울리는 것 같아요",val:"dull"},
+    {icon:"😐",bg:"rgba(150,160,170,0.1)",main:"그냥 무난한 것 같아요",sub:"특별히 좋아 보이지도, 나빠 보이지도 않아요",val:"neutral"}
+  ]}
+];
+
+var Types={
+  warm:{badge:"WARM TONE",bc:"#c9884a",bbg:"rgba(201,136,74,0.1)",type:"웜톤",ten:"Warm Tone",
+    desc:"노란빛과 황금빛이 도는 따뜻한 피부톤이에요. 골드 액세서리가 잘 어울리고 어스 컬러·가을 팔레트가 생기를 더해줘요.",
+    palette:[{c:"#c9884a",n:"카멜"},{c:"#e8c47a",n:"머스터드"},{c:"#d4845a",n:"테라코타"},{c:"#8B6914",n:"올리브골드"},{c:"#c47858",n:"버닝오렌지"}],
+    clothes:[{c:"#f5edd8",n:"아이보리"},{c:"#c9884a",n:"카멜"},{c:"#e8834a",n:"오렌지"},{c:"#c86040",n:"테라코타"},{c:"#d4a830",n:"머스터드"},{c:"#7a7830",n:"올리브"},{c:"#7a5040",n:"브라운"},{c:"#e89070",n:"코랄"}],
+    found:[{n:"옐로우 베이스 쿠션",d:"노란빛 언더톤을 살려주는 웜 베이지 계열 추천"},{n:"피치 컨실러",d:"황금빛 피부에 생기를 더해주는 피치 계열"},{n:"내추럴 베이지 파운데이션",d:"옐로우 언더톤 N계열 (예: N21~N23)"}]},
+  cool:{badge:"COOL TONE",bc:"#00c4cc",bbg:"rgba(0,196,204,0.08)",type:"쿨톤",ten:"Cool Tone",
+    desc:"핑크빛과 푸른빛이 도는 시원한 피부톤이에요. 실버 액세서리가 잘 어울리고 블루·퍼플·로즈 계열이 피부를 맑고 깨끗하게 보이게 해줘요.",
+    palette:[{c:"#7c9ecf",n:"파우더블루"},{c:"#c090b8",n:"라벤더핑크"},{c:"#00c4cc",n:"아쿠아"},{c:"#a890b8",n:"모브퍼플"},{c:"#e8d0d8",n:"블러시핑크"}],
+    clothes:[{c:"#f0f0f0",n:"화이트"},{c:"#8ab0d0",n:"스카이블루"},{c:"#c8b8e0",n:"라벤더"},{c:"#a0d8c8",n:"민트"},{c:"#e0a0b0",n:"로즈"},{c:"#b0b8c0",n:"실버그레이"},{c:"#7a2840",n:"버건디"},{c:"#283870",n:"네이비"}],
+    found:[{n:"핑크 베이스 쿠션",d:"쿨톤 피부의 맑은 결을 살리는 로즈 베이지 계열"},{n:"쿨 베이지 파운데이션",d:"블루·핑크 언더톤 C계열 (예: C21~C23)"},{n:"화이트닝 프라이머",d:"푸른빛 피부를 더욱 밝고 투명하게 연출"}]},
+  warmNeutral:{badge:"WARM NEUTRAL",bc:"#c9a070",bbg:"rgba(201,160,112,0.1)",type:"웜뉴트럴",ten:"Warm Neutral",
+    desc:"따뜻함과 중성적 특성을 함께 가진 피부톤이에요. 완전한 웜톤보다 부드럽고 자연스러우며 다양한 색상을 유연하게 소화할 수 있어요.",
+    palette:[{c:"#c8a878",n:"워밍베이지"},{c:"#b89868",n:"샌드"},{c:"#d4b88e",n:"카키베이지"},{c:"#a87858",n:"더스티코랄"},{c:"#e8d0a8",n:"크림아이보리"}],
+    clothes:[{c:"#f0e8d0",n:"크림아이보리"},{c:"#e0d8c0",n:"오트밀"},{c:"#909858",n:"카키"},{c:"#d8a8a0",n:"더스티핑크"},{c:"#c86040",n:"테라코타"},{c:"#987050",n:"탄브라운"},{c:"#b0a898",n:"웜그레이"},{c:"#d4b880",n:"샌드"}],
+    found:[{n:"뉴트럴 베이지 파운데이션",d:"노랑·붉은 치우침 없는 내추럴 베이지 N계열"},{n:"피치 베이지 쿠션",d:"자연스러운 혈색을 연출하는 피치 계열 추천"},{n:"내추럴 컨실러",d:"다크써클과 잡티를 자연스럽게 커버"}]},
+  coolNeutral:{badge:"COOL NEUTRAL",bc:"#6a3be4",bbg:"rgba(106,59,228,0.08)",type:"쿨뉴트럴",ten:"Cool Neutral",
+    desc:"시원하면서도 중성적인 특성을 가진 피부톤이에요. 회색빛과 분홍빛이 살짝 도는 세련된 피부톤으로 차분하고 고급스러운 컬러가 잘 어울려요.",
+    palette:[{c:"#8aa4b8",n:"스틸블루"},{c:"#b8a8c8",n:"더스티라일락"},{c:"#a0b8b0",n:"세이지그린"},{c:"#6a3be4",n:"미드나잇퍼플"},{c:"#d8d0d8",n:"페일로즈"}],
+    clothes:[{c:"#c8c8c8",n:"라이트그레이"},{c:"#d8a8b0",n:"더스티핑크"},{c:"#a0b8a8",n:"세이지"},{c:"#c0b0d0",n:"라일락"},{c:"#7a2840",n:"버건디"},{c:"#283870",n:"네이비"},{c:"#b098b8",n:"모브"},{c:"#a8c0d8",n:"페일블루"}],
+    found:[{n:"쿨 뉴트럴 파운데이션",d:"핑크빛이 살짝 도는 뉴트럴 계열 (C21~N21)"},{n:"세미쿨 쿠션",d:"투명한 피부 표현에 특화된 쿨베이지 계열"},{n:"그린 보정 프라이머",d:"약한 붉은기를 정돈해주는 그린 프라이머"}]}
+};
+
+var cur=0,ans={},selVal=null,curType=null;
+
+function show(id){
+  ['s-intro','s-quiz','s-result'].forEach(function(s){ document.getElementById(s).classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); },2200);
+}
+function renderQ(){
+  selVal=null;
+  var q=Qs[cur];
+  document.getElementById('prog').innerHTML=Qs.map(function(_,i){
+    return '<div class="pdot'+(i<cur?' done':i===cur?' active':'')+'"></div>';
+  }).join('');
+  var chk='<svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var h='<div class="q-label">'+q.label+'</div><div class="q-text">'+q.text.replace('\n','<br>')+'</div><div class="choices">';
+  q.choices.forEach(function(c){
+    h+='<button class="choice-btn" data-val="'+c.val+'">';
+    h+='<div class="choice-icon" style="background:'+c.bg+'">'+c.icon+'</div>';
+    h+='<div class="choice-txt"><div class="choice-main">'+c.main+'</div><div class="choice-sub">'+c.sub+'</div></div>';
+    h+='<div class="sel-check">'+chk+'</div></button>';
+  });
+  h+='</div>';
+  document.getElementById('qbox').innerHTML=h;
+  document.querySelectorAll('.choice-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      selVal=this.getAttribute('data-val');
+      document.querySelectorAll('.choice-btn').forEach(function(b){ b.classList.remove('sel'); });
+      this.classList.add('sel');
+      document.getElementById('btn-next').classList.add('ready');
+    });
+  });
+  var bn=document.getElementById('btn-next');
+  bn.classList.remove('ready');
+  bn.textContent=cur===Qs.length-1?'결과 보기 →':'다음으로 →';
+  document.getElementById('btn-back').style.visibility=cur===0?'hidden':'visible';
+  if(ans[cur]){
+    selVal=ans[cur];
+    document.querySelectorAll('.choice-btn').forEach(function(btn){
+      if(btn.getAttribute('data-val')===selVal){ btn.classList.add('sel'); bn.classList.add('ready'); }
+    });
+  }
+}
+function calcType(){
+  var a0=ans[0],a1=ans[1],a2=ans[2],w=0,c=0,n=0;
+  if(a0==='gold') w+=2; else if(a0==='silver') c+=2; else n+=2;
+  if(a1==='red') c+=2; else if(a1==='tan'){w+=1;n+=1;} else w+=2;
+  if(a2==='bright'){c+=1;n+=1;} else if(a2==='dull') w+=2; else n+=2;
+  if(w>=4&&n<2) return 'warm';
+  if(c>=4&&n<2) return 'cool';
+  return w>c?'warmNeutral':'coolNeutral';
+}
+function showResult(){
+  curType=calcType();
+  var t=Types[curType];
+  var h='<div class="result-hero">';
+  h+='<div class="result-glow"></div>';
+  h+='<div class="result-badge" style="color:'+t.bc+';background:'+t.bbg+';border-color:'+t.bc+'50;">'+t.badge+'</div>';
+  h+='<div class="result-type">'+t.type+'</div>';
+  h+='<div class="result-en">'+t.ten+'</div>';
+  h+='<p class="result-desc">'+t.desc+'</p></div>';
+  h+='<div class="divider"></div>';
+  h+='<div class="sec"><div class="sec-title">SIGNATURE PALETTE · 추천 컬러 팔레트</div><div class="palette-row">';
+  t.palette.forEach(function(p,i){var sz=[44,38,50,38,44][i];h+='<div class="sw-wrap"><div class="sw-circle" style="background:'+p.c+';width:'+sz+'px;height:'+sz+'px;"></div><div class="sw-name">'+p.n+'</div></div>';});
+  h+='</div></div>';
+  h+='<div class="sec"><div class="sec-title">CLOTHING COLORS · 어울리는 옷 색깔</div><div class="clothes-grid">';
+  t.clothes.forEach(function(cl){h+='<div class="cloth-item"><div class="cloth-circle" style="background:'+cl.c+';"></div><div class="cloth-name">'+cl.n+'</div></div>';});
+  h+='</div></div>';
+  h+='<div class="sec"><div class="sec-title">FOUNDATION · 파운데이션 추천</div>';
+  t.found.forEach(function(f){h+='<div class="f-item"><div class="f-name">'+f.n+'</div><div class="f-desc">'+f.d+'</div></div>';});
+  h+='</div>';
+  document.getElementById('rbox').innerHTML=h;
+  show('s-result');
+}
+function getShareText(){
+  var t=Types[curType];
+  return '나의 퍼스널 컬러는 '+t.type+'('+t.ten+')!\n'+t.desc+'\n\n#퍼스널컬러 #'+t.type;
+}
+function openSheet(){
+  document.getElementById('sheet-title').textContent=curType?'나의 퍼스널 컬러 — '+Types[curType].type+' 공유하기':'결과 공유하기';
+  document.getElementById('sheet-overlay').classList.add('open');
+}
+function closeSheet(){ document.getElementById('sheet-overlay').classList.remove('open'); }
+
+document.getElementById('btn-start').addEventListener('click',function(){ cur=0;ans={};selVal=null;curType=null; show('s-quiz'); renderQ(); });
+document.getElementById('btn-next').addEventListener('click',function(){ if(!selVal)return; ans[cur]=selVal; if(cur<Qs.length-1){cur++;renderQ();}else showResult(); });
+document.getElementById('btn-back').addEventListener('click',function(){ if(cur>0){cur--;renderQ();} });
+document.getElementById('btn-retry').addEventListener('click',function(){ cur=0;ans={};selVal=null;curType=null; show('s-intro'); });
+document.getElementById('btn-share').addEventListener('click', openSheet);
+document.getElementById('sheet-cancel').addEventListener('click', closeSheet);
+document.getElementById('sheet-overlay').addEventListener('click',function(e){ if(e.target===this) closeSheet(); });
+document.getElementById('sopt-kakao').addEventListener('click',function(){ closeSheet(); showToast('카카오톡으로 공유했어요 💛'); });
+document.getElementById('sopt-instagram').addEventListener('click',function(){ closeSheet(); showToast('인스타그램 스토리로 공유해보세요 ✨'); });
+document.getElementById('sopt-copy').addEventListener('click',function(){
+  var txt=getShareText();
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ closeSheet(); showToast('텍스트가 복사됐어요!'); }).catch(function(){ closeSheet(); showToast('텍스트가 복사됐어요!'); });
+  } else {
+    var ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); showToast('텍스트가 복사됐어요!'); }catch(e){ showToast('복사에 실패했어요'); }
+    document.body.removeChild(ta); closeSheet();
+  }
+});
+document.getElementById('sopt-more').addEventListener('click',function(){
+  var txt=getShareText();
+  if(navigator.share){ closeSheet(); navigator.share({title:'퍼스널 컬러 테스트 결과',text:txt}).catch(function(){}); }
+  else{ closeSheet(); showToast('공유 기능을 지원하지 않는 환경이에요'); }
+});
+</script>
